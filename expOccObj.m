@@ -53,156 +53,166 @@ try
     randomorder1=randperm(ntrials);     % randperm() is a matlab function  3 yani tedate frame ha
     TT=randperm(ntrials);
     for trial=1:ntrials
-        if (trial==floor(ntrials/3) || trial == floor(ntrials*2/3))
-            str2=sprintf('Take a rest \n');
-            str3=sprintf('5 Minutes \n');
-            message = [str2 str3 '... press mouse button to continue ...'];
-            DrawFormattedText(w, message, 'center', 'center', WhiteIndex(w));
-            % Update the display to show the instruction text:
-            Screen('Flip', w);
-            
-            % Wait for mouse click:
-            GetClicks(w);
-            WaitSecs(2);
-            
-        end    % read stimulus image into matlab matrix 'imdata':
+        %         if (trial==floor(ntrials/3) || trial == floor(ntrials*2/3))
+        %             str2=sprintf('Take a rest \n');
+        %             str3=sprintf('5 Minutes \n');
+        %             message = [str2 str3 '... press mouse button to continue ...'];
+        %             DrawFormattedText(w, message, 'center', 'center', WhiteIndex(w));
+        %             % Update the display to show the instruction text:
+        %             Screen('Flip', w);
+        %
+        %             % Wait for mouse click:
+        %             GetClicks(w);
+        %             WaitSecs(2);
+        %
+        %         end
         
         %         a=[objname((TT(trial))).name];
         %         CollNum=str2num(a(1:end-4));
         
         objNum=6;rndlist=randperm(6);
         imglist=dir(stimpath);
-        
-                % read an image of a scene
-                sceneDir=strcat([stimpath '\' ],'scene');
-                scenefiles=dir(sceneDir);
-               
-                    while  strcmp(scenefiles(rndlist(s)).name,'.') || strcmp(imglist(s).name,'..')
-                        s=s+1;
-                    end
-                
-                stimfilename=strcat([stimpath '\' ],'scene','\',scenefiles(rndlist(s)).name); % assume stims are in subfolder "stims"
-                imdata=(imresize((imread(char(stimfilename))),[256 256]));
-                
-                
-                %             kk=imdata-min(min(imdata));
-                %             kkk=kk*(256/max(max(kk)))
-                %             imdata=kkk;
-                centx = wRect(3)/2;
-                centy = wRect(4)/2;
-                fixationArea = [centx-5, centy-5, centx+5, centy+5];
-                Screen('FillOval', w, [0 255 0], fixationArea);
-                Screen('Flip',w);
-                % Fixation presentation
-                WaitSecs(1);
-                
-                
-                % %         [KeyIsDown, endrt, KeyCode]=KbCheck;
-                 Screen('PutImage', w, imdata);
-%                  Screen('Flip',w);
-%                 tex=Screen('MakeTexture', w, imdata);
-%                 Screen('DrawTexture', w, tex);
-                
-                [~, startstim]=Screen('Flip', w);
-                
-                while (GetSecs - startstim)<=0.02
-                end
-                
-                Screen(w, 'FillRect', gray);
-                [~,startgray1]=Screen(w, 'Flip');
-                Trial.Stimulus_duration(trial)=startgray1-startstim;
-                while (GetSecs - startgray1)<=0.02
-                end
-                
-                tex=Screen('MakeTexture', w, NOISE);
-                Screen('DrawTexture', w, tex);
-                [~, startNoise]=Screen('Flip', w);
-                Trial.gary_duration1(trial)=startNoise-startgray1;
-                while (GetSecs - startNoise)<=0.1
-                end
-                % ---------------------------------------------------------------------
-                Screen(w, 'FillRect', gray);
-                [~,startgray2]=Screen(w, 'Flip');
-                Trial.Noise_duration(trial)=startgray2-startNoise;
-                %         key3=zeros(size(KeyCode));
-                %         key2=zeros(size(KeyCode));
-                %         endrt2=0;
-%                 [KeyIsDown, endrt, KeyCode]=KbCheck;
-%                 while ( KeyCode(GO)==0 && KeyCode(NOGO)==0)
-%                     [KeyIsDown, endrt, KeyCode]=KbCheck;
-%                     key1=KeyCode;
-%                     WaitSecs(0.001);
-%                 end
-                WaitSecs(1);
-%                 if (strcmp(Type,'test'))
-%                     if KeyCode(GO)==1
-%                         Trial.SubjectRes=[Trial.SubjectRes 0];
-%                     else
-%                         Trial.SubjectRes=[Trial.SubjectRes 1];
-%                     end
-%                 end
-                % compute response time
-%                 rt=round(1000*(endrt-startgray2));
-%                 if (strcmp(Type,'test'))
-%                     Trial.ImageNumber=[Trial.ImageNumber CollNum];
-%                     Trial.SubRespTime=[Trial.SubRespTime rt];
-%                 end
-
-
-              % read an image of an occluded object
-                stimfilename=strcat([stimpath '\' ],'object','\',imglist(l).name); % assume stims are in subfolder "stims"
-                imdata=(imresize((imread(char(stimfilename))),[256 256]));
-                                centx = wRect(3)/2;
-                centy = wRect(4)/2;
-                fixationArea = [centx-5, centy-5, centx+5, centy+5];
-                Screen('FillOval', w, [0 255 0], fixationArea);
-                Screen('Flip',w);
-                % Fixation presentation
-                WaitSecs(1);
-                
-                
-                % %         [KeyIsDown, endrt, KeyCode]=KbCheck;
-                 Screen('PutImage', w, imdata);
-%                  Screen('Flip',w);
-%                 tex=Screen('MakeTexture', w, imdata);
-%                 Screen('DrawTexture', w, tex);
-                
-                [~, startstim]=Screen('Flip', w);
-                
-                while (GetSecs - startstim)<=0.02
-                end
-                
-                Screen(w, 'FillRect', gray);
-                [~,startgray1]=Screen(w, 'Flip');
-                Trial.Stimulus_duration(trial)=startgray1-startstim;
-                while (GetSecs - startgray1)<=0.02
-                end
-                
-                tex=Screen('MakeTexture', w, NOISE);
-                Screen('DrawTexture', w, tex);
-                [~, startNoise]=Screen('Flip', w);
-                Trial.gary_duration1(trial)=startNoise-startgray1;
-                while (GetSecs - startNoise)<=0.1
-                end
-                % ---------------------------------------------------------------------
-                Screen(w, 'FillRect', gray);
-                [~,startgray2]=Screen(w, 'Flip');
-                Trial.Noise_duration(trial)=startgray2-startNoise;
-                %         key3=zeros(size(KeyCode));
-                %         key2=zeros(size(KeyCode));
-                %         endrt2=0;
-%                 [KeyIsDown, endrt, KeyCode]=KbCheck;
-%                 while ( KeyCode(GO)==0 && KeyCode(NOGO)==0)
-%                     [KeyIsDown, endrt, KeyCode]=KbCheck;
-%                     key1=KeyCode;
-%                     WaitSecs(0.001);
-%                 end
-                WaitSecs(1);
+        % read an image of a scene
+        sceneDir=strcat([stimpath '\' ],'scene');
+        scenefiles=dir(sceneDir);s=1;
+        for l=1:length(scenefiles)
+            if ~strcmp(scenefiles(l).name,'.') && ~strcmp(scenefiles(l).name,'..')
+                sceneimgs(s)=scenefiles(l);s=s+1;
             end
         end
+        
+        
+        objDir=strcat([stimpath '\' ],'object');
+        objfiles=dir(objDir);s=1;
+        for l=1:length(objfiles)
+            if ~strcmp(objfiles(l).name,'.') && ~strcmp(objfiles(l).name,'..')
+                objimgs(s)=objfiles(l);s=s+1;
+            end
+        end
+        for o=1:objNum
+            
+            stimfilename=strcat([stimpath '\' ],'scene','\',sceneimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
+            imdata=(imresize((imread(char(stimfilename))),[256 256]));
+            
+            
+            %             kk=imdata-min(min(imdata));
+            %             kkk=kk*(256/max(max(kk)))
+            %             imdata=kkk;
+            centx = wRect(3)/2;
+            centy = wRect(4)/2;
+            fixationArea = [centx-5, centy-5, centx+5, centy+5];
+            Screen('FillOval', w, [0 255 0], fixationArea);
+            Screen('Flip',w);
+            % Fixation presentation
+            WaitSecs(1);
+            
+            
+            % %         [KeyIsDown, endrt, KeyCode]=KbCheck;
+            Screen('PutImage', w, imdata);
+            %                  Screen('Flip',w);
+            %                 tex=Screen('MakeTexture', w, imdata);
+            %                 Screen('DrawTexture', w, tex);
+            
+            [~, startstim]=Screen('Flip', w);
+            
+            while (GetSecs - startstim)<=0.02
+            end
+            
+            Screen(w, 'FillRect', gray);
+            [~,startgray1]=Screen(w, 'Flip');
+            Trial.Stimulus_duration(trial)=startgray1-startstim;
+            while (GetSecs - startgray1)<=0.02
+            end
+            
+            tex=Screen('MakeTexture', w, NOISE);
+            Screen('DrawTexture', w, tex);
+            [~, startNoise]=Screen('Flip', w);
+            Trial.gary_duration1(trial)=startNoise-startgray1;
+            while (GetSecs - startNoise)<=0.1
+            end
+            % ---------------------------------------------------------------------
+            Screen(w, 'FillRect', gray);
+            [~,startgray2]=Screen(w, 'Flip');
+            Trial.Noise_duration(trial)=startgray2-startNoise;
+            %         key3=zeros(size(KeyCode));
+            %         key2=zeros(size(KeyCode));
+            %         endrt2=0;
+            %                 [KeyIsDown, endrt, KeyCode]=KbCheck;
+            %                 while ( KeyCode(GO)==0 && KeyCode(NOGO)==0)
+            %                     [KeyIsDown, endrt, KeyCode]=KbCheck;
+            %                     key1=KeyCode;
+            %                     WaitSecs(0.001);
+            %                 end
+            WaitSecs(1);
+            %                 if (strcmp(Type,'test'))
+            %                     if KeyCode(GO)==1
+            %                         Trial.SubjectRes=[Trial.SubjectRes 0];
+            %                     else
+            %                         Trial.SubjectRes=[Trial.SubjectRes 1];
+            %                     end
+            %                 end
+            % compute response time
+            %                 rt=round(1000*(endrt-startgray2));
+            %                 if (strcmp(Type,'test'))
+            %                     Trial.ImageNumber=[Trial.ImageNumber CollNum];
+            %                     Trial.SubRespTime=[Trial.SubRespTime rt];
+            %                 end
+            
+            
+            % read an image of an occluded object
+            stimfilename=strcat([stimpath '\' ],'object','\',objimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
+            imdata=(imresize((imread(char(stimfilename))),[256 256]));
+            centx = wRect(3)/2;
+            centy = wRect(4)/2;
+            fixationArea = [centx-5, centy-5, centx+5, centy+5];
+            Screen('FillOval', w, [0 255 0], fixationArea);
+            Screen('Flip',w);
+            % Fixation presentation
+            WaitSecs(1);
+            
+            
+            % %         [KeyIsDown, endrt, KeyCode]=KbCheck;
+            Screen('PutImage', w, imdata);
+            %                  Screen('Flip',w);
+            %                 tex=Screen('MakeTexture', w, imdata);
+            %                 Screen('DrawTexture', w, tex);
+            
+            [~, startstim]=Screen('Flip', w);
+            
+            while (GetSecs - startstim)<=0.02
+            end
+            
+            Screen(w, 'FillRect', gray);
+            [~,startgray1]=Screen(w, 'Flip');
+            Trial.Stimulus_duration(trial)=startgray1-startstim;
+            while (GetSecs - startgray1)<=0.02
+            end
+            
+            tex=Screen('MakeTexture', w, NOISE);
+            Screen('DrawTexture', w, tex);
+            [~, startNoise]=Screen('Flip', w);
+            Trial.gary_duration1(trial)=startNoise-startgray1;
+            while (GetSecs - startNoise)<=0.1
+            end
+            % ---------------------------------------------------------------------
+            Screen(w, 'FillRect', gray);
+            [~,startgray2]=Screen(w, 'Flip');
+            Trial.Noise_duration(trial)=startgray2-startNoise;
+            %         key3=zeros(size(KeyCode));
+            %         key2=zeros(size(KeyCode));
+            %         endrt2=0;
+            %                 [KeyIsDown, endrt, KeyCode]=KbCheck;
+            %                 while ( KeyCode(GO)==0 && KeyCode(NOGO)==0)
+            %                     [KeyIsDown, endrt, KeyCode]=KbCheck;
+            %                     key1=KeyCode;
+            %                     WaitSecs(0.001);
+            %                 end
+            WaitSecs(1);
+        end
+        
     end % for trial loop
     
-     Screen('CloseAll');
+    Screen('CloseAll');
     ShowCursor;
     fclose('all');
     Priority(0);
