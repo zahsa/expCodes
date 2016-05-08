@@ -1,8 +1,9 @@
-stimpath='C:\Users\Zahra\Documents\ZDoc\IPM project\experiment stimulus';
+stimpath='/home/zahra/Documents/ZahraDocuments/experiment stimulus';
 
 AssertOpenGL;
-NOISE=imresize(imread(strcat(stimpath,'\',char('Noise.jpg'))),[256 256]);
+NOISE=imresize(imread(strcat(stimpath,'/',char('Noise.jpg'))),[256 256]);
 KbName('UnifyKeyNames');
+objlist={'car','person','tree','chair'};
 try
     screens=Screen('Screens');
     screenNumber=max(screens);
@@ -14,7 +15,7 @@ try
     % Set priority for script execution to realtime priority:
     priorityLevel=MaxPriority(w);
     Priority(priorityLevel);
-    str1=sprintf('You will see a scenary image followed by an image of an image of an occluded object\n');
+    str1=sprintf('You will see a scenary image followed by an image of an occluded object\n');
     str2=sprintf('You will be asked to type the name of the object you see\n');
     message = ['test phase ...\n' str1 str2 '... press mouse button to begin ...'];
     DrawFormattedText(w, message, 'center', 'center', WhiteIndex(w));
@@ -50,32 +51,37 @@ try
         %         end
         
         
-        objNum=1;rndlist=randperm(6);
-        imglist=dir(stimpath);
+%         imglist=dir(stimpath);
         
-        % read images of a scene
-        sceneDir=strcat([stimpath '\' ],'scene');
-        scenefiles=dir(sceneDir);s=1;
-        for l=1:length(scenefiles)
-            if ~strcmp(scenefiles(l).name,'.') && ~strcmp(scenefiles(l).name,'..')
-                sceneimgs(s)=scenefiles(l);s=s+1;
-            end
-        end
+%         % read images of a scene
+%         sceneDir=strcat([stimpath '\' ],'scene');
+%         scenefiles=dir(sceneDir);s=1;
+%         for l=1:length(scenefiles)
+%             if ~strcmp(scenefiles(l).name,'.') && ~strcmp(scenefiles(l).name,'..')
+%                 sceneimgs(s)=scenefiles(l);s=s+1;
+%             end
+%         end
         
-        % read images of objects
-        objDir=strcat([stimpath '\' ],'object');
-        objfiles=dir(objDir);s=1;
-        for l=1:length(objfiles)
-            if ~strcmp(objfiles(l).name,'.') && ~strcmp(objfiles(l).name,'..')
-                objimgs(s)=objfiles(l);s=s+1;
-            end
-        end
-        
-        for o=1:objNum
+%         % read images of objects
+%         objDir=strcat([stimpath '\' ],'object');
+%         objfiles=dir(objDir);s=1;
+%         for l=1:length(objfiles)
+%             if ~strcmp(objfiles(l).name,'.') && ~strcmp(objfiles(l).name,'..')
+%                 objimgs(s)=objfiles(l);s=s+1;
+%             end
+%         end
+        samplnum=5;
+        objNum=length(objlist);rndlist=randperm(objNum);
+        randObj=randperm(objNum);
+        for o=1:samplnum
+            objname=cell2mat(objlist(randObj(o)));
+            stimuli(o).name=objname;
             % 1-select a scene randomly
-            stimfilename=strcat([stimpath '\' ],'scene','\',sceneimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
-            imdata=(imresize((imread(char(stimfilename))),[256 256]));
-            
+%             sceneImgDir=strcat([stimpath '\' ],'scene','\',sceneimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
+            [sceneImgDir,objconsistname,consist]=selectScene(objname);
+            imdata=(imresize((imread(char(sceneImgDir))),[256 256]));
+            stimuli(o).scene=objconsistname;
+            stimuli(o).consistent=consist;
             % 2-show fixation point
             centx = wRect(3)/2;
             centy = wRect(4)/2;
@@ -144,8 +150,11 @@ try
             
             
             % -select an object randomly
-            stimfilename=strcat([stimpath '\' ],'object','\',objimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
-            imdata=(imresize((imread(char(stimfilename))),[256 256]));
+%             sceneImgDir=strcat([stimpath '\' ],'object','\',objimgs(rndlist(o)).name); % assume stims are in subfolder "stims"
+            
+            sceneImgDir=selectObjsmpl(objname);
+
+            imdata=(imresize((imread(char(sceneImgDir))),[256 256]));
             
             % -show fixation point
             centx = wRect(3)/2;
@@ -210,23 +219,22 @@ try
             %             DrawFormattedText(sprintf('\n your response is:%s',nameTyped));
             %             DrawFormattedText(sprintf('\n press mouse button to continue %s',nameTyped));
             
-            typedName=Ask(w,'Type the name of the object you saw, then press enter',[],[],'GetChar','center','center',[])
+            typedName=Ask(w,'Type the name of the object you saw, then press enter   ',[],[],'GetChar','center','center',[]);
             %             typedName = GetString('useKbCheck'==1)
-          
-%             Screen('Flip', w);
+           stimuli(o).response=typedName;
             % make the screen gray
             Screen(w, 'FillRect', gray);
             [~,startgray1]=Screen(w, 'Flip');
-%             Trial.Stimulus_duration(trial)=startgray1-startgray1;
-
-  message=['\nPress mouse button to continue'];   
-            DrawFormattedText(w, message, 'center', 'center', WhiteIndex(w));
-
-            while (GetSecs - startgray1)<=0.02
-            end
-
+            %             Trial.Stimulus_duration(trial)=startgray1-startgray1;
+%             str1='\n press mouse button to continue ';
+%             message=[str1 '...'];
+%             DrawFormattedText(w, message, 'center', 'center', WhiteIndex(w));
+%             
+%             while (GetSecs - startgray1)<=0.02
+%             end
+            
             %             % Wait for mouse click:
-            GetClicks(w);
+            %             GetClicks(w);
             
             
             WaitSecs(1);
