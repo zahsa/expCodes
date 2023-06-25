@@ -4,6 +4,6 @@ This study is concerned with the top-down visual processing benefit in the task 
 
 Paper: https://ui.adsabs.harvard.edu/abs/2020arXiv200710232S/abstract
 
-Please cite the following paper:
+# Citation
 Sadeghi, Zahra. "The effect of top-down attention in occluded object recognition." arXiv preprint arXiv:2007.10232 (2020).
 
